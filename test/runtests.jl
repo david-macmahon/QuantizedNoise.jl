@@ -39,5 +39,12 @@ using Statistics
 
         z = randqn(Complex{Int8}, 10^6, std=31)
         @test std(z) ≈ 31 atol=0.2
+
+        z = randqn(Complex{Int8}, 10^6, std=1+2im, mean=3+4im)
+        @test std(real(z)) ≈ 1 atol=0.2
+        @test std(imag(z)) ≈ 2 atol=0.2
+        @test std(z) ≈ sqrt(5) atol=0.2
+        @test mean(real(z)) ≈ 3 atol=0.2
+        @test mean(imag(z)) ≈ 4 atol=0.2
     end
 end

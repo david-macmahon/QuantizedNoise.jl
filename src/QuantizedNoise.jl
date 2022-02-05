@@ -19,6 +19,14 @@ be quite different from `x`, especially as `x` approaches (and exceeds)
 `typemax(T)`.  Keyword arguments `std` and `mean` may be used instead of `σ` and
 `μ`, resp.  If both forms are used, the single character keyword argument takes
 precedence.
+
+For complex types, the standard deviation `σ` or `std` may be given as a `Real`
+or `Complex`.  If `σ` is given as a `Real`, it specifies the standard deviation
+of the complex values (i.e. each real/imaginary component will have a standard
+deviarion of `σ/sqrt(2)`). If given as a `Complex`, each real/imaginary
+component of `σ` will be the standard deviation of the corresponding components
+of the output.  Note that `σ=1.0` is equivalent to `σ=(1+1im)/sqrt(2)`.
+Likewise, if `µ` is a `Real`, the complex mean will be `µ+µ*im`.
 """
 function randqn(rng, T::Type{<:Integer}, dims::Integer...;
                     std=1.0, σ=std, mean=0.0, µ=mean)
@@ -31,10 +39,12 @@ function randqn(T::Type{<:Integer}, dims::Integer...;
 end
 
 function randqn(rng, ::Type{<:Complex{T}}, dims::Integer...;
-                    std=1.0, σ=std, mean=0.0, µ=mean) where T<:Integer
-    σ /= sqrt(2)
-    complex.(randqn(rng, T, dims...; σ=σ, μ=μ),
-             randqn(rng, T, dims...; σ=σ, μ=μ))
+                    std=1.0, σ=std, mean=1.0, µ=mean) where T<:Integer
+    σr, σi = (typeof(σ) <: Real) ? (σ, σ)./sqrt(2) : (real(σ), imag(σ))
+    µr, µi = (typeof(µ) <: Real) ? (µ, µ) : (real(µ), imag(µ))
+
+    complex.(randqn(rng, T, dims...; σ=σr, μ=μr),
+             randqn(rng, T, dims...; σ=σi, μ=μi))
 end
 
 function randqn(T::Type{<:Complex{<:Integer}}, dims::Integer...;

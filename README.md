@@ -24,6 +24,14 @@ be quite different from `x`, especially as `x` approaches (and exceeds)
 `μ`, resp.  If both forms are used, the single character keyword argument takes
 precedence.
 
+For complex types, the standard deviation `σ` or `std` may be given as a `Real`
+or `Complex`.  If `σ` is given as a `Real`, it specifies the standard deviation
+of the complex values (i.e. each real/imaginary component will have a standard
+deviarion of `σ/sqrt(2)`). If given as a `Complex`, each real/imaginary
+component of `σ` will be the standard deviation of the corresponding components
+of the output.  Note that `σ=1.0` is equivalent to `σ=(1+1im)/sqrt(2)`.
+Likewise, if `µ` is a `Real`, the complex mean will be `µ+µ*im`.
+
 ## Examples
 
 ```julia
