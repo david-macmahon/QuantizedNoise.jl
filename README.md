@@ -1,24 +1,24 @@
 # QuantizedNoise
 
-This package adds methods to `Base.randn` that generate random values from the
+This package provide the function `randqn` that generate random values from the
 normal distribution `𝒩(σ,μ)` quantized to `Integer` and `Complex{<:Integer>}`
-types.  Usage is pretty much the same as other `Base.randn` methods except for
-the addition of `σ` and `µ` keyword arguments for the desired standard deviation
-and mean.  If unspecified, `σ` defaults to 1.0 and `µ` defaults to 0.0.  The
-keywords `std` and `mean` may be used instead of `σ` and `µ`, respectively.
+types.  Usage is pretty much the same as `Base.randn` except for the addition of
+`σ` and `µ` keyword arguments for the desired standard deviation and mean.  If
+unspecified, `σ` defaults to 1.0 and `µ` defaults to 0.0.  The keywords `std`
+and `mean` may be used instead of `σ` and `µ`, respectively.
 
 ## Usage
 
-    randn([rng,] T::Type{<:Integer}, dims::Integer...; σ=0.0, µ=1.0)
-    randn([rng,] T::Type{<:Integer}, dims::Integer...; std=1.0, mean=0.0)
-    randn([rng,] ::Type{<:Complex{T}}, dims::Integer...; σ=0.0, µ=1.0) where T<:Integer
-    randn([rng,] ::Type{<:Complex{T}}, dims::Integer...; std=1.0, mean=0.0) where T<:Integer
+    randqn([rng,] T::Type{<:Integer}, dims::Integer...; σ=0.0, µ=1.0)
+    randqn([rng,] T::Type{<:Integer}, dims::Integer...; std=1.0, mean=0.0)
+    randqn([rng,] ::Type{<:Complex{T}}, dims::Integer...; σ=0.0, µ=1.0) where T<:Integer
+    randqn([rng,] ::Type{<:Complex{T}}, dims::Integer...; std=1.0, mean=0.0) where T<:Integer
 
 Generate samples from the normal distribution `𝒩(σ,μ)` quantized and clamped to
 the Integer subtype `T`.  Note that the `σ` and `μ` are properties of the
 distribution from which the samples are drawn.  They are not necessarily
 properties of the returned samples.  For example, quantization will alter the
-standard deviation of the output values, so `std(randn(Int8, 10^6, std=x))` may
+standard deviation of the output values, so `std(randqn(Int8, 10^6, std=x))` may
 be quite different from `x`, especially as `x` approaches (and exceeds)
 `typemax(T)`.  Keyword arguments `std` and `mean` may be used instead of `σ` and
 `μ`, resp.  If both forms are used, the single character keyword argument takes
@@ -29,20 +29,20 @@ precedence.
 ```julia
 julia> using QuantizedNoise
 
-julia> randn(Int8, std=13)
+julia> randqn(Int8, std=13)
 25
 
-julia> randn(Int8, 2, 3, σ=13)
+julia> randqn(Int8, 2, 3, σ=13)
 2×3 Matrix{Int8}:
   97  108  89
  100   97  98
 
-julia> randn(Int8, 2, 3, σ=10, µ=100)
+julia> randqn(Int8, 2, 3, σ=10, µ=100)
 2×3 Matrix{Int8}:
  104  101  99
   83   94  94
 
-julia> randn(Complex{Int8}, 2, 3, σ=30)
+julia> randqn(Complex{Int8}, 2, 3, σ=30)
 2×3 Matrix{Complex{Int8}}:
    6-17im  -29-48im  -19+11im
  -31+18im    1+9im   -37+22im
